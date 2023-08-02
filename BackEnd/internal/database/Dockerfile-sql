@@ -1,0 +1,21 @@
+# Official image of PostgreSQL
+FROM postgres:latest
+
+RUN apt-get update && \
+    # apt-get install -y netcat
+    apt-get install -y netcat-traditional
+
+
+# Define the enviroment variable for PostgreSQL settings
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD mysecretpassword
+# ENV POSTGRES_DB house
+
+# Copy initialisation SQL script in the image
+COPY ./BackEnd/internal/database/init_db.sql /docker-entrypoint-initdb.d/
+RUN chown postgres:postgres /docker-entrypoint-initdb.d/init_db.sql
+RUN chmod +x /docker-entrypoint-initdb.d/init_db.sql
+
+
+# Expose the default port of PostgreSQL
+EXPOSE 5432

@@ -1,0 +1,25 @@
+# Establece la imagen base
+FROM node:14-alpine
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copia el package.json y el package-lock.json al directorio de trabajo
+COPY ./FrontEnd/ga-app/package*.json ./
+
+# Instala las dependencias del proyecto
+RUN npm install
+
+# Copia los archivos de la aplicación al directorio de trabajo del contenedor
+COPY ./FrontEnd/ga-app .
+
+# Compila la aplicación de React (si es necesario)
+RUN npm run build
+
+# RUN npm start
+
+# Expone el puerto 80 para que el servidor HTTP pueda escuchar las solicitudes
+EXPOSE 80
+
+# Ejecuta el servidor HTTP para servir la aplicación React
+CMD ["npm", "start"]

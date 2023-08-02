@@ -1,0 +1,9 @@
+FROM python:3.8
+
+# Move to working directory (/build).
+WORKDIR /app
+
+# Copy the code into the container.
+COPY ./BackEnd/internal/queue/sender/test/hardwareSmoke.py /app/app.py
+
+CMD ["python", "app.py"]

@@ -1,0 +1,33 @@
+FROM golang:1.20-alpine AS builder
+
+# Move to working directory (/build).
+WORKDIR /build
+
+# Copy and download dependency using go mod.
+COPY ./go.mod ./go.sum ./
+RUN go mod download
+
+
+# Copy the code into the container.
+COPY ./BackEnd/internal/queue/sender/main.go ./BackEnd/internal/queue/sender/main.go
+COPY ./BackEnd/internal/queue/handle/comm.go ./BackEnd/internal/queue/handle/comm.go
+
+# Set necessary environment variables needed for our image and build the sender.
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+RUN go build -ldflags="-s -w" -o sender ./BackEnd/internal/queue/sender/main.go
+
+# FROM scratch
+FROM alpine:latest
+
+# Copy binary and config files from /build to root folder of scratch container.
+COPY --from=builder ["/build/sender", "/"]
+
+# Set necessary environment variables for communications
+ENV ADDRIP=0.0.0.0
+ENV PORT=8000
+
+# Adds a command interpreter (sh) to have a terminal
+RUN apk --no-cache add bash
+
+# Command to run when starting the container.
+ENTRYPOINT ["/sender"]
