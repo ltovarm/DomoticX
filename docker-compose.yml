@@ -42,8 +42,6 @@ services:
       dockerfile: ./BackEnd/internal/queue/sender/Dockerfile-sender
     environment:
       AMQP_SERVER_URL: amqp://guest:guest@message-broker:5672/
-      ADDR_IP: 127.0.0.1
-      PORT: 8000
     restart: always
     networks:
       - dev-network

@@ -1,8 +1,8 @@
 {
-    "host": "localhost",
+    "host": "sender",
     "port": "5432",
-    "user": "postgres",
-    "password": "mysecretpassword",
+    "user": "guest",
+    "password": "guest",
     "queue_name": "QueueService1",
-    "queue_url": "postgres://postgres:mysecretpassword@db_sql:5432/house?sslmode=disable"
+    "queue_url": "amqp://guest:guest@message-broker:5672/"
 }

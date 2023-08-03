@@ -16,8 +16,9 @@ COPY ./BackEnd/internal/queue/handle/comm.go ./BackEnd/internal/queue/handle/com
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 RUN go build -ldflags="-s -w" -o sender ./BackEnd/internal/queue/sender/main.go
 
+
 # FROM scratch
-FROM alpine:latest
+FROM python:3.10-alpine
 
 # Copy binary and config files from /build to root folder of scratch container.
 COPY --from=builder ["/build/sender", "/"]

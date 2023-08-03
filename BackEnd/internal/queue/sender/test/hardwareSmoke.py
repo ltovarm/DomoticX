@@ -62,7 +62,7 @@ def getData():
 def test_sendTCP():
 
     # Define the IP address and port of the destination server.
-    ip_address = "localhost"
+    ip_address = "sender"
     port = 8000
     # Create a socket object.
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

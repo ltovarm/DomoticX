@@ -5,6 +5,7 @@ import pika
 import json
 import os
 import hardwareSmoke as smoke
+import time
 
 class TestRabbitMQSender(unittest.TestCase):
     def setUp(self):
@@ -18,7 +19,8 @@ class TestRabbitMQSender(unittest.TestCase):
             config = json.load(config_file)
 
         # Set up the connection to RabbitMQ (make sure RabbitMQ is running)
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(config['host']))
+        # Configurar los parámetros de conexión
+        self.connection = pika.BlockingConnection(pika.URLParameters(config['queue_url']))
         self.channel = self.connection.channel()
 
         # Define the test queue
@@ -36,6 +38,7 @@ class TestRabbitMQSender(unittest.TestCase):
         data_file_path = os.path.join(current_directory, 'payload_tcp.json')
 
         smoke.test_sendTCP()
+        time.sleep(1)
 
         # Consume the message from the queue
         method_frame, header_frame, body = self.channel.basic_get(queue=self.queue_name, auto_ack=True)

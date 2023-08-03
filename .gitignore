@@ -1,12 +1,13 @@
 # Dev build
 build/
 tmp/
+*/*/*/*/*/__pycache__/
 
 # Test
 *.out
 
 # Environment variables
-.env*
+*env*
 *.bat
 .dist/
 
@@ -15,3 +16,6 @@ tmp/
 
 #Doc
 Doc/
+
+#Script
+*.sh
