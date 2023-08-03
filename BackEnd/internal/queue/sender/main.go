@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ltovarm/Geoffrey_App/BackEnd/internal/queue/handle"
+	"github.com/ltovarm/DomoticX/BackEnd/internal/queue/handle"
 	"github.com/streadway/amqp"
 )
 
