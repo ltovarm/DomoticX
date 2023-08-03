@@ -6,7 +6,7 @@ tmp/
 *.out
 
 # Environment variables
-.env
+.env*
 *.bat
 .dist/
 
