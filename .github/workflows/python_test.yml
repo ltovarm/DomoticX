@@ -11,7 +11,7 @@ jobs:
       # Define the container with the database you need for your tests
       # Replace "db-image:latest" with the Docker image you are using
       db:
-        image: db_sql:latest
+        image: domoticx-db_sql:latest
         ports:
           - 5432:5432  # Map ports if necessary
 
