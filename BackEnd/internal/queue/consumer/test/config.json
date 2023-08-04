@@ -1,0 +1,16 @@
+{
+    "host": "localhost",
+    "port": "5672",
+    "user": "guest",
+    "password": "guest",
+    "queue_name": "QueueService1",
+    "queue_url": "amqp://guest:guest@message-broker:5672/",
+    "db_user": "postgres",
+    "db_password": "mysecretpassword",
+    "db_port": "5432",
+    "db_name": "house",
+    "db_table": "temperatures",
+    "db_url": "postgres://postgres:mysecretpassword@db_sql:5432/house?sslmode=disable",
+    "ws_url": "ws://localhost:8080",
+    "ws_port": "8080"
+}

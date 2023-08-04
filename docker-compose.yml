@@ -15,8 +15,8 @@ services:
     networks:
       - dev-network
   # Create service with SQL.
-  db_sql:
-    container_name: db_sql
+  db-sql:
+    container_name: db-sql
     ports:
       - 5432:5432
     build:

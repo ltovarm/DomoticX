@@ -18,8 +18,9 @@ jobs:
 
     - name: Start Docker Compose
       run: |
-        docker-compose up -d db_sql
+        docker-compose up -d db-sql
         docker-compose up -d sender
+        docker-compose up -d consumer
 
     - name: Wait to start
       run: |
@@ -30,16 +31,21 @@ jobs:
         sleep 10
         echo "Sender is up and running!"
 
-    - name: Install dependencies
+        while ! nc -z localhost 8080; do sleep 1; done
+        sleep 10
+        echo "Consurmer is up and running!"
+
+    - name: Run tests db
+      run: ./BackEnd/internal/database/test/bd_unittest.py
+
+
+    - name: Install dependencies sender
       run: |
         docker cp ./requirements.txt sender:/requirements.txt
         docker exec sender  python -m pip install --upgrade pip
-        docker exec sender pip install -r requirements.txt  # If you have a requirements file for your tests
+        docker exec sender pip install -r requirements.txt  
         python -m pip install --upgrade pip
-        pip install -r requirements.txt  # If you have a requirements file for your tests
-
-    - name: Run tests db
-      run: ./BackEnd/internal/database/test/bd_unittest.py  # Or the command to run your unit tests
+        pip install -r requirements.txt  
 
     - name: Run tests sender
       run: |
@@ -47,5 +53,16 @@ jobs:
         docker exec sender chmod +x /test/sender_unittest.py
         docker exec sender python3 /test/sender_unittest.py
 
+    - name: Install dependencies consumer
+      run: |
+        docker cp ./requirements.txt consumer:/requirements.txt
+        docker exec consumer  python -m pip install --upgrade pip
+        docker exec consumer pip install -r requirements.txt  
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests consumer
+      run: ./BackEnd/internal/queue/consumer/test/consumer_unittest.py
+      
     - name: Stop Docker Compose
       run: docker-compose down
