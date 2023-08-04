@@ -26,7 +26,7 @@ services:
       POSTGRES_USER: postgres # ${DB_USER}
       POSTGRES_PASSWORD: mysecretpassword # ${DB_PASSWORD}
       POSTGRES_DB: house #${DB_NAME}
-      DATABASE_URL: postgres://postgres:mysecretpassword@db_sql:5432/house?sslmode=disable
+      DATABASE_URL: postgres://postgres:mysecretpassword@db-sql:5432/house?sslmode=disable
     restart: always
     networks:
       - dev-network
@@ -57,7 +57,7 @@ services:
       dockerfile: ./BackEnd/internal/queue/consumer/Dockerfile-consumer
     environment:
       AMQP_SERVER_URL: amqp://guest:guest@message-broker:5672/
-      DATABASE_URL: postgres://postgres:mysecretpassword@db_sql:5432/house?sslmode=disable
+      DATABASE_URL: postgres://postgres:mysecretpassword@db-sql:5432/house?sslmode=disable
     dns:
       - 8.8.8.8
     restart: always
@@ -68,7 +68,7 @@ services:
     depends_on:
       - sender
       - message-broker
-      - db_sql
+      - db-sql
   # Create service with message consumer.
   tcpsmoke:
     container_name: tcpsmoke
