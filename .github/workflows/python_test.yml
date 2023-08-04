@@ -36,7 +36,10 @@ jobs:
         echo "Consurmer is up and running!"
 
     - name: Run tests db
-      run: ./BackEnd/internal/database/test/bd_unittest.py
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        ./BackEnd/internal/database/test/bd_unittest.py
 
 
     - name: Install dependencies sender
@@ -55,14 +58,11 @@ jobs:
 
     - name: Install dependencies consumer
       run: |
-        docker cp ./requirements.txt consumer:/requirements.txt
-        docker exec consumer  python -m pip install --upgrade pip
-        docker exec consumer pip install -r requirements.txt  
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Run tests consumer
       run: ./BackEnd/internal/queue/consumer/test/consumer_unittest.py
-      
+
     - name: Stop Docker Compose
       run: docker-compose down
