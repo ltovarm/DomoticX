@@ -41,13 +41,8 @@ class TestRabbitMQSender(unittest.TestCase):
         data_file_path = os.path.join(current_directory, 'payload_tcp.json')
 
         
-        # # Consume the message from the queue
-        # method_frame, header_frame, body = self.channel.basic_get(queue=self.queue_name, auto_ack=True)
-
-        body = None
-        while body is None:
-            # Consume the message from the queue
-            method_frame, header_frame, body = self.channel.basic_get(queue=self.queue_name, auto_ack=True)
+        # Consume the message from the queue
+        method_frame, header_frame, body = self.channel.basic_get(queue=self.queue_name, auto_ack=True)
 
         # Ensure the message is not null
         self.assertIsNotNone(body, "The message was not received correctly from the queue.")

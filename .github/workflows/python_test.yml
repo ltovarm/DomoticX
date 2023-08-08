@@ -16,31 +16,33 @@ jobs:
       with:
         python-version: 3.10.12  # Choose the Python version you need for your tests
 
-    - name: Start Docker Compose
+    - name: Start Docker Compose db-sql
       run: |
         docker-compose up -d db-sql
-        docker-compose up -d sender
-        docker-compose up -d consumer
 
-    - name: Wait to start
+    - name: Wait to start db-sql
       run: |
         while ! nc -z localhost 5432; do sleep 1; done
         echo "Database is up and running!"
 
-        while ! nc -z localhost 8000; do sleep 1; done
-        sleep 10
-        echo "Sender is up and running!"
-
-        while ! nc -z localhost 8080; do sleep 1; done
-        sleep 10
-        echo "Consurmer is up and running!"
-
-    - name: Run tests db
+    - name: Run tests db-sql
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         ./BackEnd/internal/database/test/bd_unittest.py
 
+    - name: Stop Docker db-sql
+      run: docker-compose down
+
+    - name: Start Docker Compose sender
+      run: |
+        docker-compose up -d sender
+
+    - name: Wait to start sender
+      run: |
+        while ! nc -z localhost 8000; do sleep 1; done
+        sleep 10
+        echo "Sender is up and running!"
 
     - name: Install dependencies sender
       run: |
@@ -56,6 +58,19 @@ jobs:
         docker exec sender chmod +x /test/sender_unittest.py
         docker exec sender python3 /test/sender_unittest.py
 
+    - name: Stop Docker sender
+      run: docker-compose down
+
+    - name: Start Docker Compose consumer
+      run: |
+        docker-compose up -d consumer
+    
+    - name: Wait to start consumer
+      run: |
+        while ! nc -z localhost 8080; do sleep 1; done
+        sleep 10
+        echo "Consurmer is up and running!"
+  
     - name: Install dependencies consumer
       run: |
         python -m pip install --upgrade pip
@@ -64,5 +79,5 @@ jobs:
     - name: Run tests consumer
       run: ./BackEnd/internal/queue/consumer/test/consumer_unittest.py
 
-    - name: Stop Docker Compose
+    - name: Stop Docker Compose consumer
       run: docker-compose down
