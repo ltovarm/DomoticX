@@ -27,6 +27,9 @@ class TestRabbitMQSender(unittest.TestCase):
         self.queue_name = config['queue_name']
         self.channel.queue_declare(queue=self.queue_name, durable=True)
 
+        smoke.test_sendTCP()
+        time.sleep(2)
+
     def tearDown(self):
         # Close the connection at the end of the tests
         self.connection.close()
@@ -36,9 +39,6 @@ class TestRabbitMQSender(unittest.TestCase):
         # Get the absolute path of the test script directory
         current_directory = os.path.dirname(os.path.abspath(__file__))
         data_file_path = os.path.join(current_directory, 'payload_tcp.json')
-
-        smoke.test_sendTCP()
-        time.sleep(2)
 
         # Consume the message from the queue
         method_frame, header_frame, body = self.channel.basic_get(queue=self.queue_name, auto_ack=True)
