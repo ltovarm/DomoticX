@@ -1,5 +1,5 @@
 SELECT 'CREATE DATABASE house' WHERE NOT EXISTS (SELECT * FROM pg_database WHERE datname = 'house');
--- CREATE DATABASE IF NOT EXISTS house;
+
 \c house;
 
 CREATE TABLE IF NOT EXISTS temperatures (

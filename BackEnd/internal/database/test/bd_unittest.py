@@ -6,13 +6,14 @@ import os
 import json
 import sqlparse
 
+
 class TestDatabaseCreation(unittest.TestCase):
     def setUp(self):
 
         # Get the absolute path of the test script directory
         current_directory = os.path.dirname(os.path.abspath(__file__))
         config_file_path = os.path.join(current_directory, 'config.json')
-        
+
         # Load configuration from the JSON file
         with open(config_file_path, 'r') as config_file:
             config = json.load(config_file)
@@ -38,7 +39,7 @@ class TestDatabaseCreation(unittest.TestCase):
         # Execute each SQL statement separately
         with self.connection.cursor() as cursor:
             for command in commands:
-                # If the statement is not empty and does not begin with "\", execute it
+                # If the statement is not empty and does not begin with "\\", execute it
                 if command.strip() and not command.strip().startswith('\\'):
                     cursor.execute(command)
             self.connection.commit()
@@ -50,14 +51,16 @@ class TestDatabaseCreation(unittest.TestCase):
 
         # Check if the database exists in PostgreSQL
         with self.connection.cursor() as cursor:
-            cursor.execute("SELECT datname FROM pg_database WHERE datname='house';")
+            cursor.execute(
+                "SELECT datname FROM pg_database WHERE datname='house';")
             result = cursor.fetchone()
 
         # Perform the assertion
-        self.assertIsNotNone(result, "The database has not been created correctly in PostgreSQL.")
+        self.assertIsNotNone(
+            result, "The database has not been created correctly in PostgreSQL.")
 
     def test_table_creation(self):
-        
+
         # Verify that table 'temperatures' exists in the schema
         with self.connection.cursor() as cursor:
             cursor.execute("""
@@ -66,7 +69,7 @@ class TestDatabaseCreation(unittest.TestCase):
                 WHERE table_name = 'temperatures';
             """)
             columns = cursor.fetchall()
-        
+
         # Verify that the table has the 'id' and 'data' columns with the appropriate types.
         expected_columns = [('id', 'integer'), ('data', 'jsonb')]
         for column_name, data_type in expected_columns:
