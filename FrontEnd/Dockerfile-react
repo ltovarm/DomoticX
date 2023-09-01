@@ -13,6 +13,8 @@ RUN npm install
 # Copia los archivos de la aplicación al directorio de trabajo del contenedor
 COPY ./FrontEnd/ga-app .
 
+RUN npm install react-router-dom
+
 # Compila la aplicación de React (si es necesario)
 RUN npm run build
 

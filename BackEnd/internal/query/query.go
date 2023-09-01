@@ -16,6 +16,12 @@ type JSONResponse struct {
 	Data []map[string]interface{} `json:"data"`
 }
 
+// User is a structure containing the keys username and password.
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 // Database is a struct to manage the database connection and operations.
 type Database struct {
 	DB         *sql.DB
@@ -37,7 +43,7 @@ func (db *Database) ConnectToDatabaseFromEnvVar() error {
 		panic(err)
 	}
 
-	log.Printf("Connection to database successfully.")
+	log.Println(" > Connection to database successfully.")
 
 	return err
 }
@@ -92,7 +98,7 @@ func (db *Database) SendDataAsJSON(jsonData []byte, sqlTable string) error {
 	log.Println(query)
 	_, err := db.DB.Exec(query, jsonData)
 	if err != nil {
-		log.Fatalln(" > Error inserting into table: %s", err.Error())
+		log.Fatalf(" > Error inserting into table: %s", err)
 		return err
 	}
 
@@ -177,4 +183,37 @@ func (db *Database) GetAllData(parameters []string, sqlTable string) ([]map[stri
 	log.Println(" > Query successfully finished")
 
 	return result, nil
+}
+
+// InsertUser adds a new user to the users table.
+func (db *Database) InsertUser(user User) error {
+	sqlQuery := `INSERT INTO users ("username", password) VALUES ($1, $2) ON CONFLICT ("username") DO NOTHING;`
+	_, err := db.DB.Exec(sqlQuery, user.Username, user.Password)
+	if err != nil {
+		log.Fatalf(" > Error inserting into table: %s", err)
+		return err
+	}
+
+	return nil
+}
+
+// CheckUser check if the user is register in the base data
+func (db *Database) CheckUser(user User) (bool, error) {
+	sqlQuery := "SELECT * FROM users WHERE \"username\" = $1 AND password = $2"
+	result, err := db.DB.Exec(sqlQuery, user.Username, user.Password)
+	if err != nil {
+		log.Fatalf(" > Error query: %s", err)
+		return false, err
+	}
+	if out, err := result.RowsAffected(); err != nil {
+		log.Fatalf(" > Error get data from table: %s", err)
+		return false, err
+	} else if out >= 1 && err == nil {
+		log.Println(" > User and password are correct.")
+		return true, nil
+	} else {
+		log.Println(" > User or password not found.")
+		return false, nil
+	}
+
 }

@@ -32,6 +32,23 @@ services:
       - dev-network
     dns_search:
       - dev-network
+  # Create service login.
+  login:
+    container_name: login
+    ports:
+      - 8082:8082
+    build:
+      context: .
+      dockerfile: ./BackEnd/internal/login/Dockerfile-login
+    environment:
+      DATABASE_URL: postgres://postgres:mysecretpassword@db-sql:5432/house?sslmode=disable
+    dns:
+      - 8.8.8.8
+    restart: always
+    networks:
+      - dev-network
+    depends_on:
+      - db-sql
   # Create service with Fiber sender.
   sender:
     container_name: sender
@@ -69,7 +86,7 @@ services:
       - sender
       - message-broker
       - db-sql
-  # Create service with message consumer.
+  # Create smoke test.
   tcpsmoke:
     container_name: tcpsmoke
     ports:
@@ -90,6 +107,8 @@ services:
       dockerfile: ./FrontEnd/Dockerfile-react
     ports:
       - "3000:3000"
+    depends_on:
+      - login
   nginx:
     image: nginx:alpine
     volumes:

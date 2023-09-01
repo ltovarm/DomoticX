@@ -8,6 +8,9 @@ stop:
 
 down: 
 	docker-compose down
+	
+login:
+	docker-compose up -d --build login
 
 consumer:
 	docker-compose up -d --build consumer
@@ -19,7 +22,7 @@ tcpSmoke:
 	docker-compose up -d --build tcpsmoke
 
 postgres:
-	docker-compose up -d --build db_sql
+	docker-compose up -d --build db-sql
 	
 front:
-	docker-compose up -d --build my-react-app
+	docker-compose up -d --build nginx

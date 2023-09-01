@@ -1,0 +1,31 @@
+FROM golang:1.20-alpine AS builder
+
+# Move to working directory (/build).
+WORKDIR /build
+
+# Copy and download dependency using go mod.
+COPY ./go.mod ./
+COPY ./go.sum ./
+RUN go mod download
+
+# Copy the code into the login.
+COPY ./BackEnd/internal/login/main.go ./BackEnd/internal/login/main.go
+COPY ./BackEnd/internal/query/query.go ./BackEnd/internal/query/query.go
+
+
+# Set necessary environment variables needed for our image and build the login.
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+# RUN go get github.com/ltovarm/Geoffrey_App/BackEnd/internal/query
+RUN go build -ldflags="-s -w" -o login ./BackEnd/internal/login/main.go
+
+# FROM scratch
+FROM alpine:latest
+
+# Adds a command interpreter (sh) to have a terminal
+RUN apk --no-cache add bash
+
+# Copy binary and config files from /build to root folder of scratch container.
+COPY --from=builder ["/build/login", "/"]
+
+# Command to run when starting the container.
+ENTRYPOINT ["/login"]
