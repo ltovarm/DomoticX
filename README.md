@@ -1,4 +1,4 @@
-# Geoffrey_App
+# DomoticX
 This is a personal project whose main objective is to learn about a complete process by developing and deploying a home automation application.
 
 # Table of Contents
