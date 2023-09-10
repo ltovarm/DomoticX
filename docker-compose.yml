@@ -49,6 +49,7 @@ services:
       - dev-network
     depends_on:
       - db-sql
+      - my-react-app
   # Create service with Fiber sender.
   sender:
     container_name: sender
@@ -99,6 +100,7 @@ services:
       - dev-network
     links:
       - sender
+  
   # FRONT
   # Create react app
   my-react-app:
@@ -107,14 +109,21 @@ services:
       dockerfile: ./FrontEnd/Dockerfile-react
     ports:
       - "3000:3000"
-    depends_on:
-      - login
+    networks:
+      - dev-network
+    dns_search:
+      - dev-network
+  # Create nginx
   nginx:
     image: nginx:alpine
     volumes:
       - ./FrontEnd/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
+    networks:
+      - dev-network
+    dns_search:
+      - dev-network
     depends_on:
       - my-react-app
 networks:
